@@ -205,7 +205,7 @@
     <div class="container">
         <!-- Halaman Utama -->
         <div id="home-page" class="home-container">
-            <h1>WhatsApp Unban Service</h1>
+            <h1>WhatsApp Unban | LutfiDev</h1>
             <div style="margin-top: 40px;">
                 <a href="https://whatsapp.com/channel/0029VbBx5iF545uyHuvE4Q2W" class="home-btn">Masuk Saluran WhatsApp</a>
                 <button id="continue-btn" class="home-btn">Lanjut</button>
@@ -217,7 +217,7 @@
         
         <!-- Halaman Form Unban -->
         <div id="unban-page" style="display: none;">
-            <h1>WhatsApp Unban Service</h1>
+            <h1>WhatsApp Unban | LutfiDev</h1>
             
             <form id="unbanForm">
                 <div class="form-group">
@@ -312,32 +312,36 @@
                     // Sembunyikan loading
                     document.getElementById('loading').style.display = 'none';
                     
+                    // Encode subject dan body
+                    const encodedSubject = encodeURIComponent(subject);
+                    const encodedBody = encodeURIComponent(body);
+                    
                     // Deteksi platform
                     const isAndroid = /Android/i.test(navigator.userAgent);
                     
                     if (isAndroid) {
-                        // Buka aplikasi Gmail di Android
-                        const gmailIntent = `intent://compose/#Intent;` +
+                        // Coba buka aplikasi Gmail menggunakan intent URL
+                        const gmailIntent = `intent://send/#Intent;` +
                             `scheme=mailto;` +
                             `package=com.google.android.gm;` +
                             `S.to=support@support.whatsapp.com;` +
-                            `S.subject=${encodeURIComponent(subject)};` +
-                            `S.body=${encodeURIComponent(body)};` +
+                            `S.subject=${encodedSubject};` +
+                            `S.body=${encodedBody};` +
                             `end;`;
                         
                         // Coba buka intent Gmail
-                        window.location.href = gmailIntent;
+                        window.open(gmailIntent, '_blank');
                         
                         // Fallback jika gagal
                         setTimeout(() => {
-                            if (document.hasFocus()) {
-                                // Jika masih di halaman ini, berarti intent gagal
-                                window.location.href = `mailto:support@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                            }
-                        }, 500);
+                            // Coba dengan mailto biasa
+                            const mailtoLink = `mailto:support@support.whatsapp.com?subject=${encodedSubject}&body=${encodedBody}`;
+                            window.location.href = mailtoLink;
+                        }, 1000);
                     } else {
                         // Untuk platform lain, gunakan mailto biasa
-                        window.location.href = `mailto:support@support.whatsapp.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                        const mailtoLink = `mailto:support@support.whatsapp.com?subject=${encodedSubject}&body=${encodedBody}`;
+                        window.location.href = mailtoLink;
                     }
                     
                     // Tampilkan notifikasi
